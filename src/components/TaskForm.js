@@ -1,0 +1,50 @@
+import React, { useContext, useState, useEffect } from 'react'
+import {TaskListContext} from '../context/TaskListContext'
+
+const TaskForm = () => {
+    const [title, setTitle] = useState('');
+    const { addTask, clearList, editTask, editItem } = useContext(TaskListContext)
+
+    const handleInputText = (e) => {  
+        const textInput = e.target.value
+        setTitle(textInput)
+    }
+
+    const handleSubmit= (e) => {
+        e.preventDefault()
+        if (!editItem) {
+            addTask(title)
+            setTitle('')
+        } else {
+            editTask(title, editItem.id)
+        }
+    }
+
+    useEffect(() => {
+        if (editItem) {
+            setTitle(editItem.title)
+            console.log(editItem)
+        } else {
+            setTitle('')
+        }
+    }, [editItem])
+
+    return (
+        <form onSubmit={handleSubmit} className="form">
+            <input 
+            onChange={handleInputText}
+            type="text" 
+            className="task-input" 
+            placeholder="Add Task"
+            value = {title}
+            required 
+            />
+            <div className="buttons">
+                <button type="submit" className="btn add-task-btn">{editItem? "Edit task" : "Add task"}</button>
+                <button onClick={clearList} className="btn clear-btn">Clear</button>
+            </div>
+        </form>
+    )
+}
+
+export default TaskForm
